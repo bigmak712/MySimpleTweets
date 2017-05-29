@@ -20,12 +20,10 @@ public class Tweet {
 
     // Deserialize the JSON and build Tweet objects
 
+    // Getter methods
     public String getBody() { return body; }
-
     public long getUid() { return uid; }
-
     public String getCreatedAt() { return createdAt; }
-
     public User getUser() { return user; }
 
     public static Tweet fromJSON(JSONObject jsonObject) {
@@ -40,7 +38,6 @@ public class Tweet {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         // Return the tweet object
         return tweet;
