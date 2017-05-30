@@ -1,10 +1,13 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -18,11 +21,15 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity {
 
+    private final int COMPOSE_REQUEST_CODE = 10;
+    private final int COMPOSE_RESULT_CODE = 20;
+
     private TwitterClient client;
     private ArrayList<Tweet> tweets;
     //private TweetsArrayAdapter aTweets;
     //private ListView lvTweets;
     private TweetsAdapter tweetsAdapter;
+    private RecyclerView rvTweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +37,7 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         // Lookup the RecyclerView in activity layout
-        RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
+        rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
         // Create the arraylist (data source)
         tweets = new ArrayList<>();
         // Create adapter passing in the data
@@ -58,6 +65,13 @@ public class TimelineActivity extends AppCompatActivity {
         */
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu which adds items to the action bar if it is present
+        getMenuInflater().inflate(R.menu.compose, menu);
+        return true;
+    }
+
     // Send an API request to get the timeline json
     // Fill the listview by creating the tweet objects from the json
     private void populateTimeline() {
@@ -72,6 +86,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // LOAD THE MODEL DATA INTO LISTVIEW
                 tweets.addAll(Tweet.fromJSONArray(json));
                 Log.d("DEBUG", tweets.toString());
+                
                 tweetsAdapter.notifyDataSetChanged();
             }
 
@@ -84,5 +99,20 @@ public class TimelineActivity extends AppCompatActivity {
 
 
         });
+    }
+
+    public void onComposeAction(MenuItem mi) {
+        Intent i = new Intent(this, ComposeActivity.class);
+        startActivityForResult(i, COMPOSE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == COMPOSE_RESULT_CODE && requestCode == COMPOSE_REQUEST_CODE) {
+            Tweet tweet = (Tweet)data.getSerializableExtra("tweet");
+            tweets.add(0, tweet);
+            tweetsAdapter.notifyItemInserted(0);
+            rvTweets.getLayoutManager().scrollToPosition(0);
+        }
     }
 }

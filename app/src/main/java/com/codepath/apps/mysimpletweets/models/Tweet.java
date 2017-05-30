@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,8 @@ import java.util.ArrayList;
  */
 
 // Parse the JSON + store the data, encapsulate state logic or display logic
-public class Tweet {
+@SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
+public class Tweet implements Serializable{
     // list out the attributes
     private String body;
     private long uid; // unique id for the tweet
