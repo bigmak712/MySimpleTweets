@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 /**
  * Created by bigmak712 on 5/29/17.
@@ -34,6 +38,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public ImageView profileImage;
         public TextView userName;
         public TextView body;
+        public TextView timeStamp;
 
         // Constructor that accepts the entire item row and does the view lookups to find each subview
         public ViewHolder(View itemView) {
@@ -45,6 +50,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             profileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             userName = (TextView) itemView.findViewById(R.id.tvUserName);
             body = (TextView) itemView.findViewById(R.id.tvBody);
+            timeStamp = (TextView) itemView.findViewById(R.id.tvTimeStamp);
         }
     }
 
@@ -87,10 +93,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         // Set item views based on your views and data model
         TextView userName = viewHolder.userName;
         TextView body = viewHolder.body;
+        TextView timeStamp = viewHolder.timeStamp;
         ImageView profileImage = viewHolder.profileImage;
 
         userName.setText(tweet.getUser().getName());
         body.setText(tweet.getBody());
+        timeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
 
         // clear out the old image for a recycled view
         profileImage.setImageResource(android.R.color.transparent);
@@ -101,5 +109,23 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return mTweets.size();
+    }
+
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
     }
 }
