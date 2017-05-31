@@ -1,5 +1,8 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,7 +10,7 @@ import org.json.JSONObject;
  * Created by bigmak712 on 5/28/17.
  */
 
-public class User {
+public class User implements Parcelable{
     // list the attributes
     private String name;
     private long uid;
@@ -15,11 +18,8 @@ public class User {
     private String profileImageUrl;
 
     public String getName() { return name; }
-
     public long getUid() { return uid; }
-
     public String getScreenName() { return screenName; }
-
     public String getProfileImageUrl() { return profileImageUrl; }
 
     //deserialize the user json -> USER
@@ -40,4 +40,46 @@ public class User {
         //Return a user
         return u;
     }
+
+    // Parcelable Methods
+
+    // Write the values that you want to save to the Parcel
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(name);
+        out.writeLong(uid);
+        out.writeString(screenName);
+        out.writeString(profileImageUrl);
+    }
+
+    // Retrieve the values that we originally wrote into the Parcel
+    private User(Parcel in) {
+        name = in.readString();
+        uid = in.readLong();
+        screenName = in.readString();
+        profileImageUrl = in.readString();
+    }
+
+    // Normal default constructor
+    public User(){}
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<User> CREATOR
+            = new Parcelable.Creator<User>() {
+
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }
