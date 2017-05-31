@@ -54,7 +54,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
     }
 
-    // Pass in the contact array into the constructor
+    // Pass in the tweets array into the constructor
     public TweetsAdapter(Context context, List<Tweet> tweets) {
         mTweets = tweets;
         mContext = context;
