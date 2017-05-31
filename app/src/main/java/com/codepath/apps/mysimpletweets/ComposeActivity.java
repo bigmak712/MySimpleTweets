@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -39,8 +38,6 @@ public class ComposeActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 Tweet newTweet = Tweet.fromJSON(response);
                 Log.d("DEBUG", newTweet.getBody());
-                Toast.makeText(ComposeActivity.this, "Success", Toast.LENGTH_SHORT).show();
-
 
                 Intent i = new Intent();
                 i.putExtra("tweet", newTweet);
@@ -49,14 +46,12 @@ public class ComposeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.d("DEBUG", responseString);
-                Toast.makeText(ComposeActivity.this, "FAILURE", Toast.LENGTH_SHORT).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("DEBUG", errorResponse.toString());
+
             }
 
         });
-        Toast.makeText(ComposeActivity.this, "end of method", Toast.LENGTH_SHORT).show();
-
     }
 }

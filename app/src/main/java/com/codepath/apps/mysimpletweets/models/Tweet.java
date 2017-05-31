@@ -1,10 +1,12 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,8 +14,7 @@ import java.util.ArrayList;
  */
 
 // Parse the JSON + store the data, encapsulate state logic or display logic
-@SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
-public class Tweet implements Serializable{
+public class Tweet implements Parcelable{
     // list out the attributes
     private String body;
     private long uid; // unique id for the tweet
@@ -65,4 +66,45 @@ public class Tweet implements Serializable{
         // Return the finished list
         return tweets;
     }
+
+    // Parcelable Methods
+
+    // Write the values you want to save to the Parcel
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(body);
+        out.writeLong(uid);
+        out.writeParcelable(user, 0);
+        out.writeString(createdAt);
+    }
+
+    // Retrieve the values that we originally wrote into the Parcel
+    private Tweet(Parcel in) {
+        body = in.readString();
+        uid = in.readLong();
+        user = in.readParcelable(User.class.getClassLoader());
+        createdAt = in.readString();
+    }
+
+    // Normal default constructor
+    public Tweet(){}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Tweet> CREATOR
+            = new Parcelable.Creator<Tweet>() {
+
+        @Override
+        public Tweet createFromParcel(Parcel in) {
+            return new Tweet(in);
+        }
+
+        @Override
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
 }
