@@ -1,21 +1,24 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+
+import static com.codepath.apps.mysimpletweets.R.id.ivProfileImage;
 
 /**
  * Created by bigmak712 on 5/29/17.
@@ -30,12 +33,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     // Store the context for easy access
     private Context mContext;
 
+    TwitterClient client;
+
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         // Holder should contain a member variable for any view that will be set as you render a row
-        public ImageView profileImage;
+        public ImageButton profileImage;
         public TextView userName;
         public TextView body;
         public TextView timeStamp;
@@ -47,7 +52,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             // context from any ViewHolder instance
             super(itemView);
 
-            profileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
+            profileImage = (ImageButton) itemView.findViewById(ivProfileImage);
             userName = (TextView) itemView.findViewById(R.id.tvUserName);
             body = (TextView) itemView.findViewById(R.id.tvBody);
             timeStamp = (TextView) itemView.findViewById(R.id.tvTimeStamp);
@@ -64,10 +69,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return mTweets;
     }
     // Easy access to the context object in the RecyclerView
-    private Context getContext() {
-        return mContext;
-
-    }
+    private Context getContext() { return mContext; }
 
     // Usually involves inflating a layout from XML and returning the holder
     @Override
@@ -94,7 +96,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView userName = viewHolder.userName;
         TextView body = viewHolder.body;
         TextView timeStamp = viewHolder.timeStamp;
-        ImageView profileImage = viewHolder.profileImage;
+        ImageButton profileImage = viewHolder.profileImage;
 
         userName.setText(tweet.getUser().getName());
         body.setText(tweet.getBody());
@@ -103,6 +105,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         // clear out the old image for a recycled view
         profileImage.setImageResource(android.R.color.transparent);
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(profileImage);
+        addListenerOnImageButton(tweet, profileImage);
     }
 
     // Returns the total count of items in the list
@@ -127,5 +130,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
 
         return relativeDate;
+    }
+
+    public void addListenerOnImageButton(final Tweet tweet, ImageButton ib) {
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch the profile view
+                Intent i = new Intent(mContext, ProfileActivity.class);
+                i.putExtra("user_id", tweet.getUser().getUid());
+                i.putExtra("screen_name", tweet.getUser().getScreenName());
+                mContext.startActivity(i);
+            }
+        });
     }
 }
