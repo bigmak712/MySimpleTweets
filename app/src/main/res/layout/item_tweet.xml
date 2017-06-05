@@ -12,7 +12,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
-        android:background="@android:color/holo_blue_bright" />
+        android:background="@drawable/round_corner" />
 
     <TextView
         android:id="@+id/tvUserName"

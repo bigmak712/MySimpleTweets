@@ -104,7 +104,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         // clear out the old image for a recycled view
         profileImage.setImageResource(android.R.color.transparent);
+
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(profileImage);
+        //profileImage.setClipToOutline(true);
         addListenerOnImageButton(tweet, profileImage);
     }
 

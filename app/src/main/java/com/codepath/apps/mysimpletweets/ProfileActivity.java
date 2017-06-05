@@ -27,12 +27,14 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         client = TwitterApplication.getRestClient();
-        long uid = getIntent().getLongExtra("user_id", 0);
-        String sname = getIntent().getStringExtra("screen_name");
 
-        if(sname == null) {
-            // Get the current user's account info
-            client.getUserInfo(new JsonHttpResponseHandler() {
+        // Retrieve the
+        long user_id = getIntent().getLongExtra("user_id", 0);
+        String screen_name = getIntent().getStringExtra("screen_name");
+
+
+        if(screen_name == null || user_id == 0) {
+            client.getCurrentUser(new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     user = User.fromJSON(response);
@@ -43,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         else {
-            client.getUserProfile(sname, uid, new JsonHttpResponseHandler() {
+            client.getUserProfile(screen_name, user_id, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     user = User.fromJSON(response);
@@ -53,11 +55,9 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
 
-        // Get the screen name from the activity that launches this
-        String screenName = getIntent().getStringExtra("screen_name");
         if(savedInstanceState == null) {
             // Create the user timeline fragment
-            UserTimelineFragment fragmentUserTimeline = UserTimelineFragment.newInstance(screenName);
+            UserTimelineFragment fragmentUserTimeline = UserTimelineFragment.newInstance(screen_name);
             // Display user fragment within this activity (dynamically)
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.flContainer, fragmentUserTimeline);
@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvFollowers.setText(user.getFollowersCount() + " Followers");
         tvFollowing.setText(user.getFriendsCount() + " Following");
         Picasso.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
+        //ivProfileImage.setClipToOutline(true);
     }
 
     @Override
