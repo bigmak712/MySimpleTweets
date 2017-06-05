@@ -3,7 +3,6 @@ package com.codepath.apps.mysimpletweets;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -37,7 +36,6 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     user = User.fromJSON(response);
-                    // My current user account's info
                     getSupportActionBar().setTitle("@" + user.getScreenName());
                     populateProfileHeader(user);
                 }
@@ -49,10 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     user = User.fromJSON(response);
-                    // My current user account's info
                     getSupportActionBar().setTitle("@" + user.getScreenName());
                     populateProfileHeader(user);
-                    Log.d("DEBUG", "Got another user");
                 }
             });
         }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,6 +20,8 @@ public class TimelineActivity extends AppCompatActivity {
     private final int COMPOSE_REQUEST_CODE = 10;
     private final int COMPOSE_RESULT_CODE = 20;
 
+    private SmartFragmentStatePagerAdapter adapterViewPager;
+    private ViewPager vpPager;
     private TweetsListFragment fragmentTweetsList;
 
     @Override
@@ -29,11 +30,15 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         // get the viewpager
-        ViewPager vpPager = (ViewPager)findViewById(R.id.viewpager);
+        vpPager = (ViewPager)findViewById(R.id.viewpager);
+
         // set the viewpager adapter for the pager
-        vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+        adapterViewPager = new TweetsPagerAdapter(getSupportFragmentManager());
+        vpPager.setAdapter(adapterViewPager);
+
         // find the sliding tabstrip
         PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)findViewById(R.id.tabs);
+
         // attach the tabstrip to the viewpager
         tabStrip.setViewPager(vpPager);
     }
@@ -70,12 +75,16 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == COMPOSE_RESULT_CODE && requestCode == COMPOSE_REQUEST_CODE) {
             Tweet tweet = data.getParcelableExtra("tweet");
-            fragmentTweetsList.tweetAdded(tweet);
+            HomeTimelineFragment fragment = (HomeTimelineFragment)adapterViewPager.getRegisteredFragment(0);
+            fragment.tweetAdded(tweet);
+            vpPager.setCurrentItem(0);
         }
     }
 
     // Return the order of the fragments in the view pager
-    public class TweetsPagerAdapter extends FragmentPagerAdapter {
+    public static class TweetsPagerAdapter extends SmartFragmentStatePagerAdapter {
+
+        private static int NUM_ITEMS = 2;
         private String tabTitles[] = {"Home", "Mentions"};
 
         // Adapter gets the manager insert or remove fragment from activity
@@ -106,7 +115,7 @@ public class TimelineActivity extends AppCompatActivity {
         // How many fragments there are to sweep between
         @Override
         public int getCount() {
-            return tabTitles.length;
+            return NUM_ITEMS;
         }
     }
 }
