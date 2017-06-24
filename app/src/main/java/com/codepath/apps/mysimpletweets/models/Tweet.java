@@ -29,18 +29,14 @@ public class Tweet implements Parcelable{
     public String getCreatedAt() { return createdAt; }
     public User getUser() { return user; }
 
-    public static Tweet fromJSON(JSONObject jsonObject) {
+    public static Tweet fromJSON(JSONObject jsonObject) throws JSONException{
         Tweet tweet = new Tweet();
 
         // Extract the values from the json, store them
-        try {
-            tweet.body = jsonObject.getString("text");
-            tweet.uid = jsonObject.getLong("id");
-            tweet.createdAt = jsonObject.getString("created_at");
-            tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        tweet.body = jsonObject.getString("text");
+        tweet.uid = jsonObject.getLong("id");
+        tweet.createdAt = jsonObject.getString("created_at");
+        tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
 
         // Return the tweet object
         return tweet;

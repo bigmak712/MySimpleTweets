@@ -14,6 +14,7 @@ import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -47,7 +48,11 @@ public class ComposeActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("DEBUG", "Got the User Account Successfully");
 
-                user = User.fromJSON(response);
+                try {
+                    user = User.fromJSON(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 ImageView profileImage = (ImageView)findViewById(ivProfileImage);
                 TextView name = (TextView)findViewById(R.id.tvUserName);
 
@@ -73,7 +78,12 @@ public class ComposeActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Tweet newTweet = Tweet.fromJSON(response);
+                Tweet newTweet = null;
+                try {
+                    newTweet = Tweet.fromJSON(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Log.d("DEBUG", newTweet.getBody());
 
                 Intent i = new Intent();

@@ -29,22 +29,17 @@ public class User implements Parcelable{
     public int getFriendsCount() { return followingCount; }
 
     //deserialize the user json -> USER
-    public static User fromJSON(JSONObject json) {
+    public static User fromJSON(JSONObject json) throws JSONException{
         User u = new User();
+
         // Extract and fill the values
-
-        try {
-            u.name = json.getString("name");
-            u.uid = json.getLong("id");
-            u.screenName = json.getString("screen_name");
-            u.profileImageUrl = json.getString("profile_image_url");
-            u.tagline = json.getString("description");
-            u.followersCount = json.getInt("followers_count");
-            u.followingCount = json.getInt("friends_count");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        u.name = json.getString("name");
+        u.uid = json.getLong("id");
+        u.screenName = json.getString("screen_name");
+        u.profileImageUrl = json.getString("profile_image_url");
+        u.tagline = json.getString("description");
+        u.followersCount = json.getInt("followers_count");
+        u.followingCount = json.getInt("friends_count");
 
         //Return a user
         return u;

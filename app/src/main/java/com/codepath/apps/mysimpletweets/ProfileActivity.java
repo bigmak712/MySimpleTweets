@@ -13,6 +13,7 @@ import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -37,7 +38,11 @@ public class ProfileActivity extends AppCompatActivity {
             client.getCurrentUser(new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    user = User.fromJSON(response);
+                    try {
+                        user = User.fromJSON(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     getSupportActionBar().setTitle("@" + user.getScreenName());
                     populateProfileHeader(user);
                 }
@@ -48,7 +53,11 @@ public class ProfileActivity extends AppCompatActivity {
             client.getUserProfile(screen_name, user_id, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    user = User.fromJSON(response);
+                    try {
+                        user = User.fromJSON(response);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     getSupportActionBar().setTitle("@" + user.getScreenName());
                     populateProfileHeader(user);
                 }

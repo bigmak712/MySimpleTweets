@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +34,26 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     private Context mContext;
 
     TwitterClient client;
+
+    // Pass in the tweets array into the constructor
+    public TweetsAdapter(Context context, List<Tweet> tweets) {
+        mTweets = tweets;
+        mContext = context;
+    }
+
+    // Usually involves inflating a layout from XML and returning the holder
+    @Override
+    public TweetsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View tweetView = inflater.inflate(R.layout.item_tweet, parent, false);
+
+        // Return a new holder instance
+        ViewHolder viewHolder = new ViewHolder(tweetView);
+        return viewHolder;
+    }
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
@@ -59,31 +79,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
     }
 
-    // Pass in the tweets array into the constructor
-    public TweetsAdapter(Context context, List<Tweet> tweets) {
-        mTweets = tweets;
-        mContext = context;
-    }
-
     public List<Tweet> getTweets() {
         return mTweets;
     }
     // Easy access to the context object in the RecyclerView
     private Context getContext() { return mContext; }
-
-    // Usually involves inflating a layout from XML and returning the holder
-    @Override
-    public TweetsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Inflate the custom layout
-        View tweetView = inflater.inflate(R.layout.item_tweet, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(tweetView);
-        return viewHolder;
-    }
 
     // Involves populating data into the item through holder
     @Override
@@ -93,21 +93,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         Tweet tweet = mTweets.get(position);
 
         // Set item views based on your views and data model
-        TextView userName = viewHolder.userName;
-        TextView body = viewHolder.body;
-        TextView timeStamp = viewHolder.timeStamp;
-        ImageButton profileImage = viewHolder.profileImage;
+        //TextView userName = viewHolder.userName;
+        //TextView body = viewHolder.body;
+        //TextView timeStamp = viewHolder.timeStamp;
+        //ImageButton profileImage = viewHolder.profileImage;
 
-        userName.setText(tweet.getUser().getName());
-        body.setText(tweet.getBody());
-        timeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.userName.setText(tweet.getUser().getName());
+        viewHolder.body.setText(tweet.getBody());
+        viewHolder.timeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
 
         // clear out the old image for a recycled view
-        profileImage.setImageResource(android.R.color.transparent);
+        viewHolder.profileImage.setImageResource(android.R.color.transparent);
 
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(profileImage);
+        Glide.with(mContext)
+                .load(tweet.getUser().getProfileImageUrl())
+                .into(viewHolder.profileImage);
+        //Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.profileImage);
         //profileImage.setClipToOutline(true);
-        addListenerOnImageButton(tweet, profileImage);
+        addListenerOnImageButton(tweet, viewHolder.profileImage);
     }
 
     // Returns the total count of items in the list
