@@ -40,9 +40,7 @@ public class ComposeActivity extends AppCompatActivity {
     }
 
     public void setUserHeader() {
-
-
-        client.getCurrentUser(new JsonHttpResponseHandler() {
+        client.getUserInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);

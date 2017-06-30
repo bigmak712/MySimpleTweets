@@ -8,10 +8,10 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.fragments.UserTimelineFragment;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,13 +29,13 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         client = TwitterApplication.getRestClient();
 
-        // Retrieve the
+        // Retrieve the user id and screen name
         long user_id = getIntent().getLongExtra("user_id", 0);
         String screen_name = getIntent().getStringExtra("screen_name");
 
 
         if(screen_name == null || user_id == 0) {
-            client.getCurrentUser(new JsonHttpResponseHandler() {
+            client.getUserInfo(new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -80,11 +80,14 @@ public class ProfileActivity extends AppCompatActivity {
         TextView tvFollowers = (TextView) findViewById(R.id.tvFollowers);
         TextView tvFollowing = (TextView) findViewById(R.id.tvFollowing);
         ImageView ivProfileImage = (ImageView) findViewById(R.id.ivProfileImage);
+
         tvName.setText(user.getName());
         tvTagLine.setText(user.getTagline());
         tvFollowers.setText(user.getFollowersCount() + " Followers");
         tvFollowing.setText(user.getFriendsCount() + " Following");
-        Picasso.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
+        Glide.with(this)
+                .load(user.getProfileImageUrl())
+                .into(ivProfileImage);
         //ivProfileImage.setClipToOutline(true);
     }
 

@@ -32,13 +32,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     private List<Tweet> mTweets;
     // Store the context for easy access
     private Context mContext;
+    private TweetAdapterListener mListener;
 
-    TwitterClient client;
+    // define an interface required by the ViewHolder
+    public interface TweetAdapterListener {
+        public void onItemSelected(View view, int position);
+    }
 
     // Pass in the tweets array into the constructor
-    public TweetsAdapter(Context context, List<Tweet> tweets) {
+    public TweetsAdapter(Context context, List<Tweet> tweets, TweetAdapterListener listener) {
         mTweets = tweets;
         mContext = context;
+        mListener = listener;
     }
 
     // Usually involves inflating a layout from XML and returning the holder
@@ -57,13 +62,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         // Holder should contain a member variable for any view that will be set as you render a row
         public ImageButton profileImage;
         public TextView userName;
         public TextView body;
         public TextView timeStamp;
+        public TextView screenName;
 
         // Constructor that accepts the entire item row and does the view lookups to find each subview
         public ViewHolder(View itemView) {
@@ -76,6 +82,19 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             userName = (TextView) itemView.findViewById(R.id.tvUserName);
             body = (TextView) itemView.findViewById(R.id.tvBody);
             timeStamp = (TextView) itemView.findViewById(R.id.tvTimeStamp);
+            screenName = (TextView) itemView.findViewById(R.id.tvScreenName);
+
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(mListener != null){
+                        // get the position of row element
+                        int position = getAdapterPosition();
+                        // fire the listener callback
+                        mListener.onItemSelected(v, position);
+                    }
+                }
+            });
         }
     }
 
@@ -101,6 +120,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         viewHolder.userName.setText(tweet.getUser().getName());
         viewHolder.body.setText(tweet.getBody());
         viewHolder.timeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.screenName.setText("@" + tweet.getUser().getScreenName());
 
         // clear out the old image for a recycled view
         viewHolder.profileImage.setImageResource(android.R.color.transparent);

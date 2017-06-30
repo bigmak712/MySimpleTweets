@@ -21,13 +21,14 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:paddingLeft="5dp"
+        android:textStyle="bold"
         android:text="Name" />
 
     <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvUserName"
+        android:layout_below="@+id/tvScreenName"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:paddingLeft="5dp"
         android:text="Body" />
@@ -36,8 +37,18 @@
         android:id="@+id/tvTimeStamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvBody"
+        android:layout_below="@+id/tvBody"
+        android:paddingLeft="5dp"
+        android:text="timeStamp" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/tvUserName"
-        android:layout_alignParentEnd="true"
-        android:text="TextView" />
+        android:layout_toEndOf="@+id/tvUserName"
+        android:paddingLeft="2dp"
+        android:text="screenName" />
 
 </RelativeLayout>

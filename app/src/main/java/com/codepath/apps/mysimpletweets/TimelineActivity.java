@@ -2,27 +2,25 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
-import com.codepath.apps.mysimpletweets.fragments.MentionsTimelineFragment;
 import com.codepath.apps.mysimpletweets.fragments.TweetsListFragment;
+import com.codepath.apps.mysimpletweets.fragments.TweetsPagerAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements TweetsListFragment.TweetSelectedListener {
 
     private final int COMPOSE_REQUEST_CODE = 10;
     private final int COMPOSE_RESULT_CODE = 20;
 
-    private SmartFragmentStatePagerAdapter adapterViewPager;
     private ViewPager vpPager;
-    private TweetsListFragment fragmentTweetsList;
+    private TweetsPagerAdapter tweetsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +30,15 @@ public class TimelineActivity extends AppCompatActivity {
         // get the viewpager
         vpPager = (ViewPager)findViewById(R.id.viewpager);
 
+        // initialize the pager adapter
+        tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager(), this);
+
         // set the viewpager adapter for the pager
-        adapterViewPager = new TweetsPagerAdapter(getSupportFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
+        vpPager.setAdapter(tweetsPagerAdapter);
 
-        // find the sliding tabstrip
-        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)findViewById(R.id.tabs);
-
-        // attach the tabstrip to the viewpager
-        tabStrip.setViewPager(vpPager);
+        // setup the TabLayout to use the view pager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(vpPager);
     }
 
     @Override
@@ -75,47 +73,14 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == COMPOSE_RESULT_CODE && requestCode == COMPOSE_REQUEST_CODE) {
             Tweet tweet = data.getParcelableExtra("tweet");
-            HomeTimelineFragment fragment = (HomeTimelineFragment)adapterViewPager.getRegisteredFragment(0);
+            HomeTimelineFragment fragment = (HomeTimelineFragment)tweetsPagerAdapter.getItem(0);
             fragment.tweetAdded(tweet);
             vpPager.setCurrentItem(0);
         }
     }
 
-    // Return the order of the fragments in the view pager
-    public static class TweetsPagerAdapter extends SmartFragmentStatePagerAdapter {
-
-        private static int NUM_ITEMS = 2;
-        private String tabTitles[] = {"Home", "Mentions"};
-
-        // Adapter gets the manager insert or remove fragment from activity
-        public TweetsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        // Controls the order and creation of fragments within the pager
-        @Override
-        public Fragment getItem(int position) {
-            if(position == 0) {
-                return new HomeTimelineFragment();
-            }
-            else if (position == 1) {
-                return new MentionsTimelineFragment();
-            }
-            else {
-                return null;
-            }
-        }
-
-        // Return the tab title
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabTitles[position];
-        }
-
-        // How many fragments there are to sweep between
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
+    @Override
+    public void onTweetSelected(Tweet tweet) {
+        Toast.makeText(this, tweet.getBody(), Toast.LENGTH_SHORT).show();
     }
 }
