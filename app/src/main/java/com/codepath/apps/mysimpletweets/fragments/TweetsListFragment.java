@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codepath.apps.mysimpletweets.R;
-import com.codepath.apps.mysimpletweets.TweetsAdapter;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterClient;
+import com.codepath.apps.mysimpletweets.adapters.TweetsAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
     private TweetsAdapter tweetsAdapter;
     private RecyclerView rvTweets;
     private SwipeRefreshLayout swipeContainer;
+    private int page = 0;
     private TwitterClient client;
 
     // inflation logic
@@ -48,17 +50,16 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_tweets_list, parent, false);
 
-        /*
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                fetchTimelineAsync(0);
+                fetchTimelineAsync(page);
             }
         });
         // Configure the refreshing colors
@@ -66,8 +67,6 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        */
-
 
         // Lookup the RecyclerView in activity layout
         rvTweets = (RecyclerView) v.findViewById(R.id.rvTweets);
@@ -109,23 +108,51 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
 
         Log.d("DEBUG", "Refreshing Timeline");
 
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                // Remember to CLEAR OUT old items before appending in the new ones
-                tweets = new ArrayList<Tweet>();
-                // ...the data has come back, add new items to your adapter...
-                tweets = Tweet.fromJSONArray(response);
-                tweetsAdapter.notifyDataSetChanged();
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-            }
+        if(page == 0) {
+            client.getHomeTimeline(new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.d("DEBUG", response.toString());
+                    // Remember to CLEAR OUT old items before appending in the new ones
+                    tweets = new ArrayList<Tweet>();
+                    // ...the data has come back, add new items to your adapter...
+                    addAll(Tweet.fromJSONArray(response));
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    swipeContainer.setRefreshing(false);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                }
+            });
+        }
+        else if(page == 1) {
+            client.getMentionsTimeline(new JsonHttpResponseHandler() {
+                // SUCCESS
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.d("DEBUG", response.toString());
+                    // Remember to CLEAR OUT old items before appending in the new ones
+                    tweets = new ArrayList<Tweet>();
+                    // ...the data has come back, add new items to your adapter...
+                    addAll(Tweet.fromJSONArray(response));
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    swipeContainer.setRefreshing(false);
+                }
+
+                // FAILURE
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    Log.d("DEBUG", errorResponse.toString());
+                }
+            });
+        }
+    }
+
+    public void setPage(int page){
+        this.page = page;
     }
 
     @Override

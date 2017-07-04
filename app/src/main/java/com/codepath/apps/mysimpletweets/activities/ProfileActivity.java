@@ -1,4 +1,4 @@
-package com.codepath.apps.mysimpletweets;
+package com.codepath.apps.mysimpletweets.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.mysimpletweets.R;
+import com.codepath.apps.mysimpletweets.TwitterApplication;
+import com.codepath.apps.mysimpletweets.TwitterClient;
 import com.codepath.apps.mysimpletweets.fragments.UserTimelineFragment;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -17,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -87,8 +91,8 @@ public class ProfileActivity extends AppCompatActivity {
         tvFollowing.setText(user.getFriendsCount() + " Following");
         Glide.with(this)
                 .load(user.getProfileImageUrl())
+                .bitmapTransform(new RoundedCornersTransformation(this, 5, 0))
                 .into(ivProfileImage);
-        //ivProfileImage.setClipToOutline(true);
     }
 
     @Override

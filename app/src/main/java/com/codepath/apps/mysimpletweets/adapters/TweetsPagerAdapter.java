@@ -1,9 +1,12 @@
-package com.codepath.apps.mysimpletweets.fragments;
+package com.codepath.apps.mysimpletweets.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
+import com.codepath.apps.mysimpletweets.fragments.MentionsTimelineFragment;
 
 /**
  * Created by bigmak712 on 6/28/17.

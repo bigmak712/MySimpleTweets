@@ -1,17 +1,19 @@
-package com.codepath.apps.mysimpletweets;
+package com.codepath.apps.mysimpletweets.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.codepath.apps.mysimpletweets.R;
+import com.codepath.apps.mysimpletweets.adapters.TweetsPagerAdapter;
 import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
 import com.codepath.apps.mysimpletweets.fragments.TweetsListFragment;
-import com.codepath.apps.mysimpletweets.fragments.TweetsPagerAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 
 public class TimelineActivity extends AppCompatActivity implements TweetsListFragment.TweetSelectedListener {
@@ -35,6 +37,20 @@ public class TimelineActivity extends AppCompatActivity implements TweetsListFra
 
         // set the viewpager adapter for the pager
         vpPager.setAdapter(tweetsPagerAdapter);
+        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                TweetsListFragment f = (TweetsListFragment)tweetsPagerAdapter.getItem(position);
+                f.setPage(position);
+                Log.d("DEBUG", "Page Changed To: " + String.valueOf(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
 
         // setup the TabLayout to use the view pager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);

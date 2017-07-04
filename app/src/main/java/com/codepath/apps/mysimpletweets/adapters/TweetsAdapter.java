@@ -1,4 +1,4 @@
-package com.codepath.apps.mysimpletweets;
+package com.codepath.apps.mysimpletweets.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +11,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.mysimpletweets.activities.ProfileActivity;
+import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.codepath.apps.mysimpletweets.R.id.ivProfileImage;
 
@@ -127,9 +131,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         Glide.with(mContext)
                 .load(tweet.getUser().getProfileImageUrl())
+                .bitmapTransform(new RoundedCornersTransformation(mContext, 5, 0))
                 .into(viewHolder.profileImage);
-        //Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.profileImage);
-        //profileImage.setClipToOutline(true);
         addListenerOnImageButton(tweet, viewHolder.profileImage);
     }
 

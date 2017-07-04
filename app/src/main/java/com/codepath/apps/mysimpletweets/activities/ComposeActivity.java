@@ -1,4 +1,4 @@
-package com.codepath.apps.mysimpletweets;
+package com.codepath.apps.mysimpletweets.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,15 +9,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.codepath.apps.mysimpletweets.R;
+import com.codepath.apps.mysimpletweets.TwitterApplication;
+import com.codepath.apps.mysimpletweets.TwitterClient;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.codepath.apps.mysimpletweets.R.id.ivProfileImage;
 import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
@@ -56,7 +60,10 @@ public class ComposeActivity extends AppCompatActivity {
 
                 name.setText(user.getName());
                 profileImage.setImageResource(android.R.color.transparent); // clear out the old image for a recycled view
-                Picasso.with(getContext()).load(user.getProfileImageUrl()).into(profileImage);
+                Glide.with(getContext())
+                        .load(user.getProfileImageUrl())
+                        .bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 0))
+                        .into(profileImage);
             }
 
             @Override
