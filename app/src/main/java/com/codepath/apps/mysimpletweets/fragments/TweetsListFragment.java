@@ -101,6 +101,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
         tweetsAdapter.notifyItemInserted(0);
         rvTweets.getLayoutManager().scrollToPosition(0);
     }
+
     public void fetchTimelineAsync(int page) {
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
@@ -114,7 +115,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     Log.d("DEBUG", response.toString());
                     // Remember to CLEAR OUT old items before appending in the new ones
-                    tweets = new ArrayList<Tweet>();
+                    tweets.clear();
                     // ...the data has come back, add new items to your adapter...
                     addAll(Tweet.fromJSONArray(response));
                     // Now we call setRefreshing(false) to signal refresh has finished
@@ -134,7 +135,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.TweetA
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     Log.d("DEBUG", response.toString());
                     // Remember to CLEAR OUT old items before appending in the new ones
-                    tweets = new ArrayList<Tweet>();
+                    tweets.clear();
                     // ...the data has come back, add new items to your adapter...
                     addAll(Tweet.fromJSONArray(response));
                     // Now we call setRefreshing(false) to signal refresh has finished

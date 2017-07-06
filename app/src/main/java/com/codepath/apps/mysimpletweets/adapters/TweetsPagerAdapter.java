@@ -27,10 +27,10 @@ public class TweetsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0) {
-            return new HomeTimelineFragment();
+            return HomeTimelineFragment.getInstance();
         }
         else if (position == 1) {
-            return new MentionsTimelineFragment();
+            return MentionsTimelineFragment.getInstance();
         }
         else {
             return null;

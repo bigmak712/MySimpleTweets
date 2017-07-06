@@ -20,6 +20,14 @@ import cz.msebera.android.httpclient.Header;
 
 public class HomeTimelineFragment extends TweetsListFragment {
     private TwitterClient client;
+    private static HomeTimelineFragment instance = null;
+
+    public static synchronized HomeTimelineFragment getInstance(){
+        if(instance == null){
+            instance = new HomeTimelineFragment();
+        }
+        return instance;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

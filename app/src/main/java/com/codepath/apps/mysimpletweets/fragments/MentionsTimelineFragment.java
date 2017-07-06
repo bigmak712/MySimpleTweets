@@ -20,7 +20,14 @@ import cz.msebera.android.httpclient.Header;
 
 public class MentionsTimelineFragment extends TweetsListFragment{
     private TwitterClient client;
+    private static MentionsTimelineFragment instance = null;
 
+    public static synchronized MentionsTimelineFragment getInstance(){
+        if(instance == null){
+            instance = new MentionsTimelineFragment();
+        }
+        return instance;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
